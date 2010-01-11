@@ -32,13 +32,23 @@ class SiteScanner
     /**
      * Class constructor
      */
-    function __construct()
-    {
-        // code...
+    function __construct($basePath)
+    {   
+        if (!is_dir($basePath)) {
+            throw new Exception("$basePath is not a directory.");
+        }
+        
+        // Change to the path specified or throw an exception
+        if (!chdir($basePath)) {
+            throw new Exception("Could not get new working directory ${basePath}.");
+        }
+        
+        // Retrieve an array of all directories in the specified path
+        $this->sites = glob('*', GLOB_ONLYDIR);
     }
     
     /**
-     * Return the mtime of the most recently modified .html file in the specified
+     * Return the timestamp of the most recently modified .html file in the specified
      * directory or any of its subdirectories.
      * 
      * @param string $dir directory to scan for .html files
@@ -60,6 +70,15 @@ class SiteScanner
         }
 
         return $newest;
+    }
+    
+    public function scan()
+    {
+        foreach ($this->sites as $dir) {
+            $dirAge = $this->_lastModified($dir);
+            echo "Most recent file in $dir: ",
+                date(DATE_RSS, $dirAge), "\n";
+        }                
     }
 }
 

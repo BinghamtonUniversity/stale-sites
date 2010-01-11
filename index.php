@@ -18,14 +18,12 @@
  * @link     http://www2.binghamton.edu/
 **/
 
+require 'SiteScanner.class.php';
+
 $basePath = '/opt/local/apache2/htdocs/www2.binghamton.edu';
 
-chdir($basePath) or die("Could not get new working directory $basePath");
+$ss = new SiteScanner($basePath);
 
-$sites = glob('*', GLOB_ONLYDIR);
-
-foreach ($sites as $dir) {
-    echo "Most recent file in $dir: ", date(DATE_RSS, lastModified($dir)), "\n";
-}
+$ss->scan();
 
 ?>
