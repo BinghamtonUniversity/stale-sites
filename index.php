@@ -19,11 +19,11 @@
 **/
 
 require 'SiteScanner.class.php';
+require 'config.php';
 
-$basePath = '/opt/local/apache2/htdocs/www2.binghamton.edu';
-
-$ss = new SiteScanner($basePath);
+$ss = new SiteScanner($basePath, $ignoredSites);
 
 $ss->scanSites();
 
+$ss->displayReport();
 ?>

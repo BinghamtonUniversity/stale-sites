@@ -29,6 +29,12 @@
 **/
 class SiteScanner
 {
+
+    private $_sites        = array();    
+    private $_ignoredSites = array();
+    private $_siteAges     = array();
+    private $_outputDir;
+    
     /**
      * Class constructor
      *
@@ -36,8 +42,10 @@ class SiteScanner
      *
      * @return null
     **/
-    function __construct($basePath)
+    function __construct($basePath, Array $ignoredSites)
     {   
+        $this->_outputDir = getcwd();
+        
         if (!is_dir($basePath)) {
             throw new Exception("$basePath is not a directory.");
         }
@@ -48,7 +56,9 @@ class SiteScanner
         }
         
         // Retrieve an array of all directories in the specified path
-        $this->sites = glob('*', GLOB_ONLYDIR);
+        $unfilteredSites = glob('*', GLOB_ONLYDIR);
+        
+        $this->_sites = array_diff($unfilteredSites, $ignoredSites);
     }
     
     /**
@@ -66,7 +76,7 @@ class SiteScanner
         try {
             $it = new RecursiveDirectoryIterator($dir);            
         } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            // echo 'Caught exception: ',  $e->getMessage(), "<br />\n";
             return 0;
         }
         
@@ -79,10 +89,25 @@ class SiteScanner
                 }
             }        
         } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";          
+            // echo 'Caught exception: ',  $e->getMessage(), "<br />\n";          
         }
 
         return $newest;
+    }
+    
+    private function _cacheOutdated()
+    {   
+        $previousDir = getcwd();
+
+        chdir($this->_outputDir);        
+        
+        if (mktime() - filemtime('cache.html') > 3600) {
+            chdir($previousDir);
+            return true;
+        } else {
+            chdir($previousDir);
+            return false;
+        }                   
     }                
 
     /**
@@ -109,29 +134,62 @@ class SiteScanner
      * @return null
     **/
     public function scanSites()
-    {
-        $siteAges = array();
-
-        echo "\n<pre>";
-                
-        foreach ($this->sites as $dir) {
-            $siteAge = $this->_lastModified($dir);
-            if ($siteAge > 0) {
-                $siteAges[$dir] = $siteAge;
+    {           
+        if ($this->_cacheOutdated()) {
+            foreach ($this->_sites as $dir) {
+                $siteAge = $this->_lastModified($dir);
+                if ($siteAge > 0) {
+                    $this->_siteAges[$dir] = $siteAge;
+                }
             }
-        }
+            asort($this->_siteAges);                
+        }               
+    }
+            
+    /**
+     * Generate the report with results grouped by specified intervals.
+     *
+     * @return null
+    **/    
+    public function displayReport()
+    {       
+        chdir($this->_outputDir);
 
-        asort($siteAges);                
+        if ($this->_cacheOutdated()) {
+            $intervals = array(
+                "6+ Months Old" => 180,
+                "3+ Months Old" => 90,
+                "60+ Days Old"  => 60,
+                "30+ Days Old"  => 30
+                );        
 
-        foreach ($siteAges as $site => $siteAge) {
-            echo date('Y-m-d', $siteAge), 
-                " => /${site}", 
-                " (", 
-                $this->_daysOld($siteAge), 
-                " days old)\n";
-        }
+            $siteAge = $this->_daysOld(current($this->_siteAges));               
+       
+            $cache = fopen('cache.html', 'w');
 
-        echo "</pre>";
+            while (current($intervals)) {
+                if ($siteAge >= current($intervals)) {
+                    fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
+                    while ($siteAge >= current($intervals)) {
+                        fwrite($cache, '<a href="/' .
+                            key($this->_siteAges) .
+                            '/">' .
+                            key($this->_siteAges) .
+                            "</a> (" . 
+                            $siteAge . 
+                            " days old)<br/>\n");
+
+                        $siteAge = $this->_daysOld(next($this->_siteAges));                        
+                    }
+                }
+                next($intervals);
+                fwrite($cache, "<br/>\n");
+            }
+
+            fclose($cache);
+        }        
+
+        echo file_get_contents('cache.html');                      
     }
 }
 
