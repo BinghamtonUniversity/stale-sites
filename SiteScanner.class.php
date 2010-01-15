@@ -1,7 +1,11 @@
 <?php
 
 /**
- * Class description here
+ * Implements a class that will scan top-level subdirectories within a given
+ * directory, filtering them to remove unwanted directories. Generates an HTML 
+ * report (cached for 1 hour) listing directories that have no .html files that have
+ * been edited in the last 30 days or less. The results are grouped by specified
+ * intervals.
  *
  * PHP version 5
  *
@@ -29,14 +33,23 @@
 **/
 class SiteScanner
 {
+    // flag used to track if a report has been generated in the past hour
     private $_cacheOutdated = true;
+    
+    // array of directories to be scanned
     private $_sites         = array();    
-    private $_ignoredSites  = array();
+
+    // associative array of directories and their 'last-modified' timestamps
     private $_siteAges      = array();
+    
+    // directory that will contain the cached HTML output
     private $_outputDir;
     
     /**
      * Class constructor
+     *
+     * If a report has been cached within the past hour, a flag is set that skips
+     * the directory processing and the cached file will be output.
      *
      * @param string $basePath     the site root
      * @param array  $ignoredSites array of directories to ignore
@@ -46,7 +59,8 @@ class SiteScanner
     function __construct($basePath, Array $ignoredSites)
     {   
         $this->_outputDir = getcwd();
-
+        
+        // determine if a report has been cached in the past hour or not
         if (mktime() - filemtime('cache.html') < 3600) {
             $this->_cacheOutdated = false;
         }
@@ -55,14 +69,15 @@ class SiteScanner
             throw new Exception("$basePath is not a directory.");
         }
         
-        // Change to the path specified or throw an exception
+        // change to the path specified or throw an exception
         if (!chdir($basePath)) {
             throw new Exception("Could not get new working directory ${basePath}.");
         }
                 
-        // Retrieve an array of all directories in the specified path
+        // retrieve an array of all directories in the specified path
         $unfilteredSites = glob('*', GLOB_ONLYDIR);
         
+        // remove 'ignored' directories from the array
         $this->_sites = array_diff($unfilteredSites, $ignoredSites);
     }
     
@@ -77,7 +92,8 @@ class SiteScanner
     private function _lastModified($dir)
     {
         $newest = 0;
-
+        
+        // skip the directory if it can't be read due to filesystem permissions
         try {
             $it = new RecursiveDirectoryIterator($dir);            
         } catch (Exception $e) {
@@ -85,6 +101,8 @@ class SiteScanner
             return 0;
         }
         
+        // scan through the directory and its subdirectories to determine the
+        // most recent .html file contained within
         try {
             foreach (new RecursiveIteratorIterator($it) as $file) {
                 if (fnmatch('*.html', $file)) {
@@ -119,7 +137,7 @@ class SiteScanner
     }
     
     /**
-     * Check every directory to find their timestamps
+     * Find the timestamp of each directory. 
      *
      * @return null
     **/
@@ -138,6 +156,10 @@ class SiteScanner
             
     /**
      * Generate the report with results grouped by specified intervals.
+     * 
+     * The HTML is generated and stored in cache.html if needed (depending on the
+     * age of the most recently cached version) and then the contents of cache.html
+     * are output.
      *
      * @return null
     **/    
