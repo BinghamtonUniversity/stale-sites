@@ -24,6 +24,6 @@ $basePath = '/opt/local/apache2/htdocs/www2.binghamton.edu';
 
 $ss = new SiteScanner($basePath);
 
-$ss->scan();
+$ss->scanSites();
 
 ?>

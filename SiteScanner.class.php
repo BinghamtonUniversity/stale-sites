@@ -31,7 +31,11 @@ class SiteScanner
 {
     /**
      * Class constructor
-     */
+     *
+     * @param string $basePath the site root
+     *
+     * @return null
+    **/
     function __construct($basePath)
     {   
         if (!is_dir($basePath)) {
@@ -59,26 +63,75 @@ class SiteScanner
     {
         $newest = 0;
 
-        $it = new RecursiveDirectoryIterator($dir);
-
-        foreach (new RecursiveIteratorIterator($it) as $file) {
-            if (fnmatch('*.html', $file)) {
-                if (filemtime($file) > $newest) {
-                    $newest = filemtime($file);
+        try {
+            $it = new RecursiveDirectoryIterator($dir);            
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            return 0;
+        }
+        
+        try {
+            foreach (new RecursiveIteratorIterator($it) as $file) {
+                if (fnmatch('*.html', $file)) {
+                    if (filemtime($file) > $newest) {
+                        $newest = filemtime($file);
+                    }
                 }
-            }
+            }        
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";          
         }
 
         return $newest;
+    }                
+
+    /**
+     * Return the amount of days that have passed between the specified date and
+     * today (ignoring time of day so that if it's 3pm today, a timestamp of 6pm
+     * last night will still be reported as 1 day old).
+     * 
+     * @param int $timestamp timestamp that we're comparing to
+     * 
+     * @return int number of days that have passed since $timestamp
+    **/    
+    private function _daysOld($timestamp)
+    {   
+        // to compare dates and ignore time-of-day, make the comparison
+        // vs. midnight today by using mktime(24)
+        $diff = mktime(24) - $timestamp;
+        
+        return floor($diff / (86400)); // 86400 seconds = 1 day
     }
     
-    public function scan()
+    /**
+     * Check every directory to find their timestamps
+     *
+     * @return null
+    **/
+    public function scanSites()
     {
+        $siteAges = array();
+
+        echo "\n<pre>";
+                
         foreach ($this->sites as $dir) {
-            $dirAge = $this->_lastModified($dir);
-            echo "Most recent file in $dir: ",
-                date(DATE_RSS, $dirAge), "\n";
-        }                
+            $siteAge = $this->_lastModified($dir);
+            if ($siteAge > 0) {
+                $siteAges[$dir] = $siteAge;
+            }
+        }
+
+        asort($siteAges);                
+
+        foreach ($siteAges as $site => $siteAge) {
+            echo date('Y-m-d', $siteAge), 
+                " => /${site}", 
+                " (", 
+                $this->_daysOld($siteAge), 
+                " days old)\n";
+        }
+
+        echo "</pre>";
     }
 }
 
