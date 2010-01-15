@@ -29,22 +29,27 @@
 **/
 class SiteScanner
 {
-
-    private $_sites        = array();    
-    private $_ignoredSites = array();
-    private $_siteAges     = array();
+    private $_cacheOutdated = true;
+    private $_sites         = array();    
+    private $_ignoredSites  = array();
+    private $_siteAges      = array();
     private $_outputDir;
     
     /**
      * Class constructor
      *
-     * @param string $basePath the site root
+     * @param string $basePath     the site root
+     * @param array  $ignoredSites array of directories to ignore
      *
      * @return null
     **/
     function __construct($basePath, Array $ignoredSites)
     {   
         $this->_outputDir = getcwd();
+
+        if (mktime() - filemtime('cache.html') < 3600) {
+            $this->_cacheOutdated = false;
+        }
         
         if (!is_dir($basePath)) {
             throw new Exception("$basePath is not a directory.");
@@ -54,7 +59,7 @@ class SiteScanner
         if (!chdir($basePath)) {
             throw new Exception("Could not get new working directory ${basePath}.");
         }
-        
+                
         // Retrieve an array of all directories in the specified path
         $unfilteredSites = glob('*', GLOB_ONLYDIR);
         
@@ -95,21 +100,6 @@ class SiteScanner
         return $newest;
     }
     
-    private function _cacheOutdated()
-    {   
-        $previousDir = getcwd();
-
-        chdir($this->_outputDir);        
-        
-        if (mktime() - filemtime('cache.html') > 3600) {
-            chdir($previousDir);
-            return true;
-        } else {
-            chdir($previousDir);
-            return false;
-        }                   
-    }                
-
     /**
      * Return the amount of days that have passed between the specified date and
      * today (ignoring time of day so that if it's 3pm today, a timestamp of 6pm
@@ -135,7 +125,7 @@ class SiteScanner
     **/
     public function scanSites()
     {           
-        if ($this->_cacheOutdated()) {
+        if ($this->_cacheOutdated) {
             foreach ($this->_sites as $dir) {
                 $siteAge = $this->_lastModified($dir);
                 if ($siteAge > 0) {
@@ -155,7 +145,7 @@ class SiteScanner
     {       
         chdir($this->_outputDir);
 
-        if ($this->_cacheOutdated()) {
+        if ($this->_cacheOutdated) {
             $intervals = array(
                 "6+ Months Old" => 180,
                 "3+ Months Old" => 90,
@@ -171,15 +161,17 @@ class SiteScanner
                 if ($siteAge >= current($intervals)) {
                     fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
                     while ($siteAge >= current($intervals)) {
-                        fwrite($cache, '<a href="/' .
+                        fwrite(
+                            $cache, '<a href="/' .
                             key($this->_siteAges) .
                             '/">' .
                             key($this->_siteAges) .
                             "</a> (" . 
                             $siteAge . 
-                            " days old)<br/>\n");
+                            " days old)<br/>\n"
+                        );
 
-                        $siteAge = $this->_daysOld(next($this->_siteAges));                        
+                        $siteAge = $this->_daysOld(next($this->_siteAges));
                     }
                 }
                 next($intervals);
