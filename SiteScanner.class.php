@@ -19,7 +19,7 @@
  * @package  Stale_Sites
  * @author   Patrick Lewis <plewis@binghamton.edu>
  * @license  http://www.php.net/license/3_01.txt  PHP License 3.01
- * @link     http://www2.binghamton.edu/
+ * @link     http://www2.binghamton.edu/patrick/stale-sites/
 **/
  
 /**
@@ -29,7 +29,7 @@
  * @package  Stale_Sites
  * @author   Patrick Lewis <plewis@binghamton.edu>
  * @license  http://www.php.net/license/3_01.txt  PHP License 3.01
- * @link     http://www2.binghamton.edu/
+ * @link     http://www2.binghamton.edu/patrick/stale-sites/
 **/
 class SiteScanner
 {
@@ -166,7 +166,9 @@ class SiteScanner
     public function displayReport()
     {       
         chdir($this->_outputDir);
-
+        
+        // generate a new report if the currently cached one is outdated,
+        // otherwise just output the cached version
         if ($this->_cacheOutdated) {
             $intervals = array(
                 "6+ Months Old" => 180,
@@ -179,6 +181,10 @@ class SiteScanner
        
             $cache = fopen('cache.html', 'w');
 
+            // iterate through each interval, printing a heading and then
+            // listing all sites that fall under that interval before
+            // moving on to the next one. sites newer than the shortest
+            // interval will not be inlcuded in the report.
             while (current($intervals)) {
                 if ($siteAge >= current($intervals)) {
                     fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
