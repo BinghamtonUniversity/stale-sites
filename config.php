@@ -1,20 +1,18 @@
 <?php
 include_once 'Database.php';
-$basePath = null; //load base path
-$errorMsg = null;
-$db = new Database();
 
+$basePath = null;
+
+$ignoredSites = array(
+    'images',
+    'magazine',
+    );
 try {
+	$db = new Database;
 	$basePath = $db->getBaseDir();
 }
 catch(Exception $e) {
-	$db = null;
-	$errorMsg = $e->getMessage();
+	$basePath = null;
 }
 
-$ignoredSites = array(
-    'bedupako/',
-    'newBedupako/',
-    'textApp/'
-    );
 ?>

@@ -12,7 +12,7 @@
 define('CONFIG_TB','config');
 define('CONFIG_TB_BASE','S_BASE_DIR');
 define('DB_CONN_STR','sqlite:config.db');
-
+define('CACHE_FILE_PATH','cache.html');
 class Database
 {
 	private $db = NULL; //contains database connection.
@@ -104,11 +104,13 @@ class Database
 		$this->cleanTable(CONFIG_TB);
 		$this->insertInto(CONFIG_TB,array(CONFIG_TB_BASE),array($dir));
 		$this->close();
+		unlink(CACHE_FILE_PATH);
 	}
 	public function cleanDir() {
 		$this->connect();
 		$this->cleanTable(CONFIG_TB);
 		$this->close();
+		unlink(CACHE_FILE_PATH);
 	}
 }
 ?>
