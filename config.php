@@ -1,10 +1,20 @@
 <?php
+include_once 'Database.php';
+$basePath = null; //load base path
+$errorMsg = null;
+$db = new Database();
 
-$basePath = '/opt/local/apache2/htdocs/www2.binghamton.edu';
+try {
+	$basePath = $db->getBaseDir();
+}
+catch(Exception $e) {
+	$db = null;
+	$errorMsg = $e->getMessage();
+}
 
 $ignoredSites = array(
-    'images',
-    'magazine',
+    'bedupako/',
+    'newBedupako/',
+    'textApp/'
     );
-
 ?>
