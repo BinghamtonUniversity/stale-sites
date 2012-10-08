@@ -134,7 +134,7 @@ class SiteScanner
         $tmpCnt = 0;
         $totalFilesScanned = 0;
         $totals = array();
-        $totalsCount = array();
+       // $totalsCount = array();
         $numberOfTotals = 0;
 //echo PHP_INT_MAX."\n";
         $maxIntVal = PHP_INT_MAX - time() - 1; //-1 just to ensure its still within range
@@ -161,7 +161,7 @@ class SiteScanner
                     }                        
                     else { //echo "YESS\n";
                         $totals[$numberOfTotals] = $tmpTotal;
-                        $totalsCount[$numberOfTotals] = $tmpCnt;
+                        //$totalsCount[$numberOfTotals] = $tmpCnt;
                         $numberOfTotals++;
                         $tmpCnt = 0;
                         $tmpTotal = 0;
@@ -169,7 +169,7 @@ class SiteScanner
                 }
             }
             $totals[$numberOfTotals] = $tmpTotal;
-            $totalsCount[$numberOfTotals] = $tmpCnt;
+            //$totalsCount[$numberOfTotals] = $tmpCnt;
             $numberOfTotals++;
             $tmpCnt = 0;
             $tmpTotal = 0;
