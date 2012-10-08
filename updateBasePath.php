@@ -1,5 +1,6 @@
 <?php
 include_once 'Database.php';
+include_once 'config.php';
 if(!isset($_POST['url']) ) {
 	echo "Please check your provided URL";	
 }
@@ -8,7 +9,8 @@ $url = trim($_POST['url']);
 
 try {
 	if(strlen($url) > 0) {
-		$db->replaceBaseDir($url);
+		if($url != $basePath)
+			$db->replaceBaseDir($url);
 		echo "success";
 		exit;
 	}

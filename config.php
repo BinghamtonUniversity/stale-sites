@@ -6,6 +6,7 @@ $basePath = null;
 $ignoredSites = array(
     'images',
     'magazine',
+    ".git"
     );
 try {
 	$db = new Database;

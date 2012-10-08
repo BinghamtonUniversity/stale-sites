@@ -61,8 +61,10 @@ class SiteScanner
         $this->_outputDir = getcwd();
         
         // determine if a report has been cached in the past hour or not
-        if (mktime() - filemtime('cache.html') < 3600) {
-            $this->_cacheOutdated = false;
+        if(file_exists('./cache.html')) {
+            if (mktime() - filemtime('./cache.html') < 3600) {
+                $this->_cacheOutdated = false;
+            }
         }
         
         if (!is_dir($basePath)) {
@@ -105,7 +107,7 @@ class SiteScanner
         // most recent .html file contained within
         try {
             foreach (new RecursiveIteratorIterator($it) as $file) {
-                if (fnmatch('*.html', $file)) {
+                if (fnmatch('*.php', $file)) {
                     if (filemtime($file) > $newest) {
                         $newest = filemtime($file);
                     }
@@ -166,7 +168,7 @@ class SiteScanner
     public function displayReport()
     {       
         chdir($this->_outputDir);
-        
+        // var_dump($this->_cacheOutdated);
         // generate a new report if the currently cached one is outdated,
         // otherwise just output the cached version
         if ($this->_cacheOutdated) {
@@ -174,7 +176,8 @@ class SiteScanner
                 "6+ Months Old" => 180,
                 "3+ Months Old" => 90,
                 "60+ Days Old"  => 60,
-                "30+ Days Old"  => 30
+                "30+ Days Old"  => 30,
+                "1+ Days Old"  => 1
                 );        
 
             $siteAge = $this->_daysOld(current($this->_siteAges));               
@@ -185,10 +188,14 @@ class SiteScanner
             // listing all sites that fall under that interval before
             // moving on to the next one. sites newer than the shortest
             // interval will not be inlcuded in the report.
+            //var_dump($this->_siteAges);
             while (current($intervals)) {
+
+            //var_dump($siteAge);
+            //var_dump(current($intervals));
+                fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
                 if ($siteAge >= current($intervals)) {
-                    fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
-                    while ($siteAge >= current($intervals)) {
+                    while ($siteAge >= current($intervals) && current($this->_siteAges) !==false) {
                         fwrite(
                             $cache, '<a href="/' .
                             key($this->_siteAges) .
@@ -198,16 +205,28 @@ class SiteScanner
                             $siteAge . 
                             " days old)<br/>\n"
                         );
-
-                        $siteAge = $this->_daysOld(next($this->_siteAges));
+                        if(next($this->_siteAges) !==false) {
+                            $siteAge = $this->_daysOld(current($this->_siteAges));
+                            //echo 'here - '.$siteAge.' ';   
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
+                else {
+                    fwrite(
+                            $cache, 'none'
+                    );
+                }
                 next($intervals);
+
                 fwrite($cache, "<br/>\n");
             }
 
             fclose($cache);
-        }        
+        }      
 
         echo file_get_contents('cache.html');                      
     }

@@ -20,6 +20,8 @@
 include_once 'config.php';
 
 
+//set_time_limit(5);
+//xdebug_enable();
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,7 +34,7 @@ include_once 'config.php';
 <body>
 
 <div id="content">
-	<h1> Stale sites v1.0 </h1>
+	<h1> Stale sites v1.5 </h1>
 	<h2> SUNY Binghamton </h2>
 	<p>
 		<lable> Base Path:

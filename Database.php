@@ -104,13 +104,15 @@ class Database
 		$this->cleanTable(CONFIG_TB);
 		$this->insertInto(CONFIG_TB,array(CONFIG_TB_BASE),array($dir));
 		$this->close();
-		unlink(CACHE_FILE_PATH);
+		if(file_exists(CACHE_FILE_PATH))
+			unlink(CACHE_FILE_PATH);
 	}
 	public function cleanDir() {
 		$this->connect();
 		$this->cleanTable(CONFIG_TB);
 		$this->close();
-		unlink(CACHE_FILE_PATH);
+		if(file_exists(CACHE_FILE_PATH))
+			unlink(CACHE_FILE_PATH);
 	}
 }
 ?>
