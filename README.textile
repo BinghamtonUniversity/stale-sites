@@ -7,6 +7,7 @@ h2. Notes
 * A directory is considered to be as new as the most-recently-edited .html file contained within that directory or its subdirectories.
 * Top-level directories are included in the report by default. They can be excluded from the report, and subdirectories can be flagged for inclusion in the report as needed.
 * Only sites older than the configured staleness threshold will be included in the report. 
+* Currently it calculates the age of a directory based on the average age of the *.html files in it.
 
 
 Commenting the new code is still left out.

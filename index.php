@@ -19,7 +19,7 @@
 **/
 include_once 'config.php';
 
-
+//unlink('cache.html')
 //set_time_limit(5);
 //xdebug_enable();
 ?>
@@ -34,7 +34,7 @@ include_once 'config.php';
 <body>
 
 <div id="content">
-	<h1> Stale sites v1.5 </h1>
+	<h1> Stale sites v1.6 </h1>
 	<h2> SUNY Binghamton </h2>
 	<p>
 		<lable> Base Path:
