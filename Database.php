@@ -80,7 +80,7 @@ class Database
 			echo "The insertion into the database failed! ".$e->getMessage();
 		}
 	}
-
+	
 	public function getBaseDir() {
 		$this->connect();
 		$rows = $this->getRows(CONFIG_TB,array(CONFIG_TB_BASE));		
