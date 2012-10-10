@@ -1,8 +1,8 @@
-h1. Stale Site Reporter
+# Stale Site Reporter
 
 This package generates a report that identifies stale directories within a given website structure.
 
-h2. Notes
+## Notes
 
 * A directory is considered to be as new as the most-recently-edited .html file contained within that directory or its subdirectories.
 * Top-level directories are included in the report by default. They can be excluded from the report, and subdirectories can be flagged for inclusion in the report as needed.
