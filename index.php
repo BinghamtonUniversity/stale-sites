@@ -9,7 +9,7 @@ include_once 'config.php';
 <!DOCTYPE html>
 <html>
 <head>
-<title>Stale Site - Binghamton university.</title>
+<title>Binghamton University - Stale Sites</title>
 <link href="style.css" rel="stylesheet" type="text/css">
 <script src="jquery-1.8.2.min.js" type="text/javascript"></script>
 <script src="custom.js" type="text/javascript"></script>
@@ -18,7 +18,7 @@ include_once 'config.php';
 
 <div id="content">
 	<h1> Stale sites v1.6 </h1>
-	<h2> SUNY Binghamton </h2>
+	<h2>Binghamton University</h2>
 	<p>
 		<lable> Base Path:
 			<input type="text" name="base-dir" id="base-dir" value="<?php echo $basePath; ?>"/>
