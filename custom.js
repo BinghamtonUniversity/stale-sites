@@ -1,6 +1,6 @@
 function updateMainContent() {
 	$("#status-indicator").text("Fetching your data...");
-	$.get("getStaleSytes.php",null,function(data) {
+	$.get("getStaleSites.php",null,function(data) {
 		$("#status-indicator").text("Below are your stale-sites.");
 		$("#main-text").html(data);
 	},"html");
