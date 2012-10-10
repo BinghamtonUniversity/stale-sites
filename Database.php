@@ -24,7 +24,7 @@ class Database
 			$this->db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 		}
 		catch(PDOException $e) {
-			echo "Database connection error";
+			echo "Database connection error: $e";
 			exit;
 		}
 	}
