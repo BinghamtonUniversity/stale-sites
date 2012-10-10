@@ -143,7 +143,8 @@ class SiteScanner
         try {
             $it = new RecursiveDirectoryIterator($dir);            
         } catch (Exception $e) {
-            // echo 'Caught exception: ',  $e->getMessage(), "<br />\n";
+            //echo 'Caught exception: ',  $e->getMessage(), "<br />\n";
+            //echo "here";
             return 0;
         }
         
@@ -189,8 +190,8 @@ class SiteScanner
 
             return intval($avg);
 
-        } catch (Exception $e) {
-             echo 'Caught exception: ',  $e->getMessage(), "<br />\n";          
+        } catch (Exception $e) { //comes here if read permission denied
+             //echo 'Caught exception: ',  $e->getMessage(), "<br />\n";          
         }
 
         //error

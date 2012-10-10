@@ -41,7 +41,7 @@ include_once 'config.php';
 	</h2>
 	<div id="main-text">
 		<?php
-		if($basePath !== null) include_once("getStaleSytes.php");
+		if($basePath !== null) include_once("getStaleSites.php");
 		?>
 	</div>
 </div>
