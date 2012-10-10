@@ -3,8 +3,14 @@ include_once 'SiteScanner.class.php';
 include_once 'config.php';
 
 if($basePath !== null) {
+	try {
 	$ss = new SiteScanner($basePath, $ignoredSites);
 	$ss->scanSites();
 	$ss->displayReport($basePath);
+	}
+	catch(Exception $e) {
+		echo $e->getMessage();
+	}
+
 }
 ?>
