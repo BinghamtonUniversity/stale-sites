@@ -261,13 +261,12 @@ class SiteScanner
         // otherwise just output the cached version
         if ($this->_cacheOutdated) {
             $intervals = array(
+                "24+ Months Old" => 730,
+                "18+ Months Old" => 545,
+                "12+ Months Old" => 365,
                 "6+ Months Old" => 180,
-                "3+ Months Old" => 90,
-                "60+ Days Old"  => 60,
-                "30+ Days Old"  => 30,
-                "1+ Days Old"  => 1
-                );        
-
+                "3+ Months Old" => 90
+                );
             $siteAge = $this->_daysOld(current($this->_siteAges));               
        
             $cache = fopen('cache.html', 'w');
@@ -278,12 +277,18 @@ class SiteScanner
             // interval will not be inlcuded in the report.
             //var_dump($this->_siteAges);
             while (current($intervals)) {
-
+                $isCurrentIntervalStarted = false;
             //var_dump($siteAge);
             //var_dump(current($intervals));
-                fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
+                
                 if ($siteAge >= current($intervals)) {
                     while ($siteAge >= current($intervals) && current($this->_siteAges) !==false) {
+
+                        if(!$isCurrentIntervalStarted) {
+                            fwrite($cache, "<h2>" . key($intervals) . "</h2>\n");
+                            $isCurrentIntervalStarted = true;
+                        }
+
                         fwrite(
                             $cache, '<a href="' .$urlStart .
                             key($this->_siteAges) .
@@ -306,7 +311,8 @@ class SiteScanner
                 
                 next($intervals);
 
-                fwrite($cache, "<br/>\n");
+                if($isCurrentIntervalStarted)
+                    fwrite($cache, "<br/>\n");
             }
 
             fclose($cache);
