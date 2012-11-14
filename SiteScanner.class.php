@@ -44,6 +44,9 @@ class SiteScanner
     
     // directory that will contain the cached HTML output
     private $_outputDir;
+
+    //array to contain the ignored file names to exclude from calcuation
+    private $_ignoredFileNames;
     
     /**
      * Class constructor
@@ -56,7 +59,7 @@ class SiteScanner
      *
      * @return null
     **/
-    function __construct($basePath, Array $ignoredSites)
+    function __construct($basePath, Array $ignoredSites, Array $ignoredFileNames)
     {   
         $this->_outputDir = getcwd();
         
@@ -81,6 +84,7 @@ class SiteScanner
         
         // remove 'ignored' directories from the array
         $this->_sites = array_diff($unfilteredSites, $ignoredSites);
+        $this->_ignoredFileNames = $ignoredFileNames;
     }
     
     /**
@@ -153,7 +157,7 @@ class SiteScanner
         try {
             foreach (new RecursiveIteratorIterator($it) as $dirLevel => $file) {
 
-                if (fnmatch('*.html', $file)) {
+                if (fnmatch('*.html', $file) && !in_array($file, $this->_ignoredFileNames)) {
                     if($tmpTotal < $maxIntVal) {
                         //echo filemtime($file)."\n";
                         $tmpTotal += filemtime($file);
