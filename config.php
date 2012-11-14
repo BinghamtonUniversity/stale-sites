@@ -9,6 +9,13 @@ $ignoredSites = array(
     'magazine',
     ".git"
     );
+
+$ignoredFileNames = array (
+	'logo.html',
+	'hnav.html',
+	'nav.html'
+	);
+
 try {
 	$db = new Database;
 	$basePath = $db->getBaseDir();
