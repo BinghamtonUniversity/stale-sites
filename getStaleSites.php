@@ -7,7 +7,7 @@ if($basePath !== null) {
 		$ss = new SiteScanner($basePath, $ignoredSites, $ignoredFileNames);
 		$ss->scanSites();
 		//$ss->displayReport($basePath); //Bug https://github.com/BinghamtonUniversity/stale-sites/issues/10
-		$ss->displayReport();
+		$ss->displayReport("http://".$_SERVER['HTTP_HOST']);
 	}
 	catch(Exception $e) {
 		echo $e->getMessage();

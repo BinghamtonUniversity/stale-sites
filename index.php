@@ -1,8 +1,7 @@
 <?php  
-
 include_once 'config.php';
 
-//unlink('cache.html')
+unlink('cache.html')
 //set_time_limit(5);
 //xdebug_enable();
 ?>
