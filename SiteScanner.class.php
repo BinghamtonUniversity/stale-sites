@@ -48,6 +48,8 @@ class SiteScanner
     //array to contain the ignored file names to exclude from calcuation
     private $_ignoredFileNames;
     
+    //array of ignored directory names
+    private $_ignoredDirectories;
     /**
      * Class constructor
      *
@@ -65,7 +67,7 @@ class SiteScanner
         
         // determine if a report has been cached in the past hour or not
         if(file_exists('./cache.html')) {
-            if (mktime() - filemtime('./cache.html') < 3600) {
+            if (@mktime() - filemtime('./cache.html') < 3600) {
                 $this->_cacheOutdated = false;
             }
         }
@@ -85,6 +87,7 @@ class SiteScanner
         // remove 'ignored' directories from the array
         $this->_sites = array_diff($unfilteredSites, $ignoredSites);
         $this->_ignoredFileNames = $ignoredFileNames;
+        $this->_ignoredDirectories = $ignoredSites;
     }
     
     /**
@@ -153,11 +156,18 @@ class SiteScanner
         }
         
         // scan through the directory and its subdirectories to determine the
-        // most recent .html file contained within
+        // average of .html file contained within
         try {
+            //$tmp = implode(" ", $this->_ignoredDirectories); // used to avoid implode multiple times
             foreach (new RecursiveIteratorIterator($it) as $dirLevel => $file) {
 
+                // if(in_array(getcwd()."/".$dirLevel, $this->_ignoredDirectories) || strpos($tmp, getcwd()."/".$dirLevel."/") === false) {
+                //     echo "IGNORED ".getcwd()."/".$dirLevel;
+                //     continue;
+                // }
+
                 if (fnmatch('*.html', $file) && !in_array($file, $this->_ignoredFileNames)) {
+
                     if($tmpTotal < $maxIntVal) {
                         //echo filemtime($file)."\n";
                         $tmpTotal += filemtime($file);
@@ -227,11 +237,14 @@ class SiteScanner
     public function scanSites()
     {           
         if ($this->_cacheOutdated) {
-            foreach ($this->_sites as $dir) {
-                //$siteAge = $this->_lastModified($dir);
-                $siteAge = $this->_avgModified($dir);
-                if ($siteAge > 0) {
-                    $this->_siteAges[$dir] = $siteAge;
+            foreach ($this->_sites as $dir) { 
+                //echo getcwd()."/".$dir." , ";
+                if(! in_array(getcwd()."/".$dir, $this->_ignoredDirectories)) {
+                    //$siteAge = $this->_lastModified($dir);
+                    $siteAge = $this->_avgModified($dir);
+                    if ($siteAge > 0) {
+                        $this->_siteAges[$dir] = $siteAge;
+                    }
                 }
             }
             asort($this->_siteAges);                
@@ -290,7 +303,7 @@ class SiteScanner
                         }
 
                         fwrite(
-                            $cache, '<a href="' .$urlStart .
+                            $cache, '<a href = "addExcludeUrls.php?url='.urlencode(key($this->_siteAges)).'"> X</a> - <a href="' .$urlStart .
                             key($this->_siteAges) .
                             '/">' .
                             key($this->_siteAges) .
