@@ -1,7 +1,7 @@
 <?php  
 include_once 'config.php';
 
-unlink('cache.html')
+//unlink('cache.html')
 //set_time_limit(5);
 //xdebug_enable();
 ?>
@@ -24,8 +24,22 @@ unlink('cache.html')
 			<input type="button" name="update-button" id="update-button" value="Update"/>
 		</lable>
 	</p>
+	<p>
+		Current Excluded paths: 
+		<div id = "ignoredSites">
+			<?php include_once("getIgnoredSites.php"); ?>
+		</div>
+		<lable> Add exclude Path/s : (comma seperated input) <br/>Note: Relative paths are ignored from base path <br/>
+			<input type="text" name="exclude-dir" id="exclude-dir" value=""/>
+			<input type="button" name="exclude-button" id="exclude-button" value="Exclude"/>
+		</lable>
+	</p>
 	<h2 id="status-indicator">
-	<?php if($basePath === null) {
+
+	<?php 
+	if(isset($_GET['error'])) echo $_GET['error'];
+
+	if($basePath === null) {
 		?>
 		 Please setup your base-path first. 
 		<?php
