@@ -126,6 +126,20 @@ class SiteScanner
 
         return $newest;
     }
+
+    private function _notInIgnoredFileNames($file) {
+        $fileLen = strlen($file);
+        foreach ($this->_ignoredFileNames as $fileName) {
+            $fileNameLen = strlen($fileName);
+
+            if($fileLen >= $fileNameLen && substr($file, $fileLen-$fileNameLen) == $fileName) {
+                //echo "found $file - $fileName";
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Return the  average timestamp of the edited .html files in the specified
      * directory or any of its subdirectories.
@@ -166,7 +180,7 @@ class SiteScanner
                 //     continue;
                 // }
 
-                if (fnmatch('*.html', $file) && !in_array($file, $this->_ignoredFileNames)) {
+                if (fnmatch('*.html', $file) && $this->_notInIgnoredFileNames($file)) {
 
                     if($tmpTotal < $maxIntVal) {
                         //echo filemtime($file)."\n";
