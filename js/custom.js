@@ -1,7 +1,7 @@
 function updateContent() {
 	$("#status-indicator").text("Fetching your data...");
 	$.get("getStaleSites.php",null,function(data) {
-		$("#status-indicator").text("Below are your stale-sites.");
+		$("#status-indicator").text("Data loaded").removeClass().addClass("alert alert-block");
 		$("#main-text").html(data);
 	},"html");
 	$.get("getIgnoredSites.php",null,function(data) {
@@ -11,7 +11,7 @@ function updateContent() {
 
 $(document).ready(function() {
 	$("#update-button").click(function() {
-		$("#status-indicator").text("Updating base path...");
+		$("#status-indicator").text("Updating base path...").removeClass().addClass("alert alert-block");
 		$.post("updateBasePath.php",
 			{url: $("#base-dir").val()},
 			function(data) {
@@ -19,12 +19,12 @@ $(document).ready(function() {
 					updateContent();
 				}
 				else {
-					$("#status-indicator").text(data);
+					$("#status-indicator").text(data).removeClass().addClass("alert alert-block alert-error");
 				}
 		});
 	});
 	$("#exclude-button").click(function() {
-		$("#status-indicator").text("Updating exclude path/s...");
+		$("#status-indicator").text("Updating exclude path/s...").removeClass().addClass("alert alert-block");
 		$.post("addExcludeUrls.php",
 			{url: $("#exclude-dir").val()},
 			function(data) {
@@ -32,7 +32,7 @@ $(document).ready(function() {
 					updateContent();
 				}
 				else {
-					$("#status-indicator").text(data);
+					$("#status-indicator").text(data).removeClass().addClass("alert alert-block alert-error");
 				}
 		});
 	});
