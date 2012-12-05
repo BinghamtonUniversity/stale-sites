@@ -7,56 +7,88 @@ include_once 'config.php';
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-<title>Binghamton University - Stale Sites</title>
-<link href="style.css" rel="stylesheet" type="text/css">
-<script src="jquery-1.8.2.min.js" type="text/javascript"></script>
-<script src="custom.js" type="text/javascript"></script>
-</head>
-<body>
+  <head>
+    <title>Stale Sytes</title>
+  	<script src="js/jquery.js"></script>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 
-<div id="content">
-	<h1> Stale sites v1.6 </h1>
-	<h2>Binghamton University</h2>
-	<p>
-		<lable> Base Path:
-			<input type="text" name="base-dir" id="base-dir" value="<?php echo $basePath; ?>"/>
-			<input type="button" name="update-button" id="update-button" value="Update"/>
-		</lable>
-	</p>
-	<p>
-		Current Excluded paths: 
-		<div id = "ignoredSites">
-			<?php include_once("getIgnoredSites.php"); ?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  </head>
+  <body>
+  	<div class="container-fluid">
+  		
+  		<div class="row-fluid">	
+  			<h1 class="span12" style="text-align: center"> Stale sites <small>v1.6</small> </h1>
 		</div>
-		<lable> Add exclude Path/s : (comma seperated input) <br/>Note: Relative paths are ignored from base path <br/>
-			<input type="text" name="exclude-dir" id="exclude-dir" value=""/>
-			<input type="button" name="exclude-button" id="exclude-button" value="Exclude"/>
-		</lable>
-	</p>
-	<h2 id="status-indicator">
+		<div class="row-fluid" style="text-align:center">
+  			<img src="img/bulogo.png" width="168px" height="55px" class="img-polaroid">
+  		</div>
 
-	<?php 
-	if(isset($_GET['error'])) echo $_GET['error'];
+		<div class="row-fluid"><div class="span12"></div></div>	<!-- Extra space -->
+	  <div class="row-fluid">
+	    <div class="span2">
+	     
+			
+				<lable> <strong>Base Path</strong>:<br>
+					<div class="input-append">
+					  <input class="span8" name="base-dir" id="base-dir" value="<?php echo $basePath; ?>" type="text"/>
+					  <button type="button" name="update-button" id="update-button" value="Update" class="btn btn-primary">Update</button>
+					</div>
+				</lable>
+			
+			<br><br>
+				<lable> <strong>Add exclude Path/s : </strong>
 
-	if($basePath === null) {
-		?>
-		 Please setup your base-path first. 
-		<?php
-	}
-	else {
-		?>
-		Below are your stale-sites.
+					<div class="input-append">
+						<input type="text" name="exclude-dir" id="exclude-dir" value="" placeholder="comma seperated input" class="span8"/>
+						<button type="button" name="exclude-button" id="exclude-button" class="btn btn-danger">Exclude</button>
+					</div>
+				</lable>
+				<small>Note: Relative paths are ignored from base path</small>
 
-		<?php
-	}
-	?>
-	</h2>
-	<div id="main-text">
-		<?php
-		if($basePath !== null) include_once("getStaleSites.php");
-		?>
+			<br><br>
+				<strong>Current Excluded paths</strong>: 
+				<div id = "ignoredSites">
+					<?php include_once("getIgnoredSites.php"); ?>
+				</div>
+
+			
+	    </div>
+	    <div class="well span10">
+	    	<div id="status-indicator">
+
+			<?php 
+			if(isset($_GET['error']))  {
+				?>
+				<span class="alert alert-block alert-error">
+					<?=$_GET['error'];?>
+				</span>
+				<?php
+			}
+
+			if($basePath === null) {
+				?>
+				<span class="alert alert-block alert-error">
+				 Please setup your base-path first. 
+				</span>
+				<?php
+			}
+			?>
+			</div>
+	      <!--Body content-->
+	      	<div class="offset2" id="main-text">
+	      	<?php
+				if($basePath !== null) include_once("getStaleSites.php");
+			?>
+			</div>
+	    </div>
+	  </div>
 	</div>
-</div>
-</body>
+  	<script src="js/bootstrap.min.js"></script>
+	<script src="js/custom.js" type="text/javascript"></script>
+  </body>
+  
 </html>
