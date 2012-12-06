@@ -43,7 +43,7 @@ include_once 'config.php';
 				<lable> <strong>Add exclude Path/s : </strong>
 
 					<div class="input-append">
-						<input type="text" name="exclude-dir" id="exclude-dir" value="" placeholder="comma seperated input" class="span8"/>
+						<input type="text" name="exclude-dir" id="exclude-dir" value="" placeholder="comma separated input" class="span8"/>
 						<button type="button" name="exclude-button" id="exclude-button" class="btn btn-danger">Exclude</button>
 					</div>
 				</lable>
