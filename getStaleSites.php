@@ -7,11 +7,31 @@ if($basePath !== null) {
 		$ss = new SiteScanner($basePath, $ignoredSites, $ignoredFileNames);
 		$ss->scanSites();
 		//$ss->displayReport($basePath); //Bug https://github.com/BinghamtonUniversity/stale-sites/issues/10
-		$ss->displayReport("http://".$_SERVER['HTTP_HOST']);
+		$ans = $ss->getReport("http://".$_SERVER['HTTP_HOST']);
+
+		?>
+		<table class="table table-striped table-hover table-bordered">
+			<tr>
+				<td>X</td>
+				<td>Name</td>
+				<td>Days</td>
+			</tr>
+			<?php
+			foreach ($ans as $key => $value) {
+			?>
+			<tr>
+				<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>">X</a></td>
+				<td><?=$key?></td>
+				<td><?=$value?></td>
+			</tr>
+			<?php
+			}
+			?>
+		</table>
+	<?php
 	}
 	catch(Exception $e) {
 		echo $e->getMessage();
 	}
-
 }
 ?>
