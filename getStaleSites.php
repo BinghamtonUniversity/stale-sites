@@ -10,11 +10,11 @@ if($basePath !== null) {
 		$ans = $ss->getReport("http://".$_SERVER['HTTP_HOST']);
 
 		?>
-		<table class="table table-striped table-hover table-bordered">
+		<table class="table table-striped table-hover table-bordered" width="50%">
 			<tr>
-				<td>X</td>
-				<td>Name</td>
-				<td>Days</td>
+				<td width="10%"><strong>Exclude</strong></td>
+				<td width="80%"><strong>Name</strong></td>
+				<td width="10%"><strong>Days</strong></td>
 			</tr>
 			<?php
 			foreach ($ans as $key => $value) {
