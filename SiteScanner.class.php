@@ -273,7 +273,7 @@ class SiteScanner
      * are output.
      *
      * @return null
-    **/    
+      
     public function displayReport($urlStart = NULL)
     {       
         chdir($this->_outputDir);
@@ -348,6 +348,81 @@ class SiteScanner
             echo "Cached output being displayed: <br/>";
         }
         echo file_get_contents('cache.html');                      
+    }
+**/  
+        /**
+     * Generate the report with results grouped by specified intervals.
+     * 
+     * The Report is generated and stored in cache.html if needed (depending on the
+     * age of the most recently cached version) and then the contents of cache.html
+     * are output.
+     *
+     * @return null
+    **/    
+    public function getReport()
+    {       
+        chdir($this->_outputDir);
+
+        $ans = array();        
+        
+        // var_dump($this->_cacheOutdated);
+        // generate a new report if the currently cached one is outdated,
+        // otherwise just output the cached version
+        if ($this->_cacheOutdated) {
+            $intervals = array(
+                "24+ Months Old" => 730,
+                "18+ Months Old" => 545,
+                "12+ Months Old" => 365,
+                "6+ Months Old" => 180,
+                "3+ Months Old" => 90
+                );
+            $siteAge = $this->_daysOld(current($this->_siteAges));               
+       
+            $cache = fopen('cache.html', 'w');
+
+            // iterate through each interval, printing a heading and then
+            // listing all sites that fall under that interval before
+            // moving on to the next one. sites newer than the shortest
+            // interval will not be inlcuded in the report.
+            //var_dump($this->_siteAges);
+
+
+            while (current($intervals)) {
+
+                if ($siteAge >= current($intervals)) {
+                    while ($siteAge >= current($intervals) && current($this->_siteAges) !==false) {
+                        fwrite($cache,key($this->_siteAges)."|".$siteAge."\n");
+                        $ans[key($this->_siteAges)] = $siteAge;
+
+                        if(next($this->_siteAges) !==false) {
+                            $siteAge = $this->_daysOld(current($this->_siteAges));
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                next($intervals);
+            }
+        }
+        else {
+            echo "Cached output being displayed: <br/>";
+
+            $cache = fopen('cache.html', 'r');
+            if($cache) {
+                while(!feof($cache)) {
+                    $lineSplit = explode("|", fgets($cache));
+                    if(strlen($lineSplit[0]) > 0)
+                        $ans[$lineSplit[0]] = $lineSplit[1];
+                }
+            }
+        }
+
+        if($cache)
+            fclose($cache);
+
+        return $ans;
     }
 }
 
