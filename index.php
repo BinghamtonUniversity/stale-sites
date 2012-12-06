@@ -8,7 +8,7 @@ include_once 'config.php';
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Stale Sytes</title>
+    <title>Stale Sites</title>
   	<script src="js/jquery.js"></script>
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
