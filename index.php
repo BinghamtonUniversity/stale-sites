@@ -57,7 +57,7 @@ include_once 'config.php';
 
 			
 	    </div>
-	    <div class="well span10">
+	    <div class="span10">
 	    	<div id="status-indicator">
 
 			<?php 
@@ -79,7 +79,7 @@ include_once 'config.php';
 			?>
 			</div>
 	      <!--Body content-->
-	      	<div class="offset2" id="main-text">
+	      	<div id="main-text">
 	      	<?php
 				if($basePath !== null) include_once("getStaleSites.php");
 			?>
