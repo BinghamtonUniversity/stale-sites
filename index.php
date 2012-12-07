@@ -29,7 +29,7 @@ include_once 'config.php';
 
 		<div class="row-fluid"><div class="span12"></div></div>	<!-- Extra space -->
 	  <div class="row-fluid">
-	    <div class="span2">
+	    <div class="span2 offset4">
 	     
 			
 				<lable> <strong>Base Path</strong>:<br>
@@ -57,7 +57,7 @@ include_once 'config.php';
 
 			
 	    </div>
-	    <div class="span10">
+	    <div class="span2">
 	    	<div id="status-indicator">
 
 			<?php 
