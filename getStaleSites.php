@@ -21,7 +21,7 @@ if($basePath !== null) {
 			?>
 			<tr>
 				<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>"></a></td>
-				<td><?=$key?></td>
+				<td><a href="/<?=$key?>"><?=$key?></a></td>
 				<td><?=$value?></td>
 			</tr>
 			<?php
