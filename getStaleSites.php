@@ -12,9 +12,9 @@ if($basePath !== null) {
 		?>
 		<table class="table table-striped table-hover table-bordered">
 			<tr>
-				<td>X</td>
-				<td>Name</td>
-				<td>Days</td>
+				<th>X</th>
+				<th>Name</th>
+				<th>Days</th>
 			</tr>
 			<?php
 			foreach ($ans as $key => $value) {
