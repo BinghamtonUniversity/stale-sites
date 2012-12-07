@@ -20,7 +20,7 @@ if($basePath !== null) {
 			foreach ($ans as $key => $value) {
 			?>
 			<tr>
-				<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>">X</a></td>
+				<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>"></a></td>
 				<td><?=$key?></td>
 				<td><?=$value?></td>
 			</tr>
