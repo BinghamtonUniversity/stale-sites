@@ -173,8 +173,29 @@ class Database
 		}
 
 		$this->close();
-		if(file_exists(CACHE_FILE_PATH))
-			unlink(CACHE_FILE_PATH);
+
+		if(file_exists(CACHE_FILE_PATH)) {
+			//read the cache and delete that line!
+			$inp = array();
+			$cache = fopen(CACHE_FILE_PATH, 'r');
+            if($cache) {
+                while(!feof($cache)) {
+                	$tmp = fgets($cache);
+                    $lineSplit = explode("|", $tmp);
+                    if(strlen($lineSplit[0]) > 0 && !in_array($lineSplit[0], $dirs))
+                        $inp[] = $tmp;
+                }
+
+                fclose($cache);
+            }
+         	$cache = fopen(CACHE_FILE_PATH, 'w');
+            if($cache) {
+                foreach ($inp as $val) {
+                	fwrite($cache,$val);
+                }
+                fclose($cache);
+            }   
+		}
 	}
 
 	public function delExcludePathDir($dir) {
