@@ -8,7 +8,15 @@ if($basePath !== null) {
 		$ss->scanSites();
 		//$ss->displayReport($basePath); //Bug https://github.com/BinghamtonUniversity/stale-sites/issues/10
 		$ans = $ss->getReport();
+		asort($ans);
 
+        $intervals = array(
+            "24+ Months Old" => 730,
+            "18+ Months Old" => 545,
+            "12+ Months Old" => 365,
+            "6+ Months Old" => 180,
+            "3+ Months Old" => 90
+            );
 		?>
 		<table class="table table-striped table-hover table-bordered" width="50%">
 			<tr>
@@ -17,14 +25,25 @@ if($basePath !== null) {
 				<td width="10%"><strong>Days</strong></td>
 			</tr>
 			<?php
-			foreach ($ans as $key => $value) {
-			?>
-			<tr>
-				<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>">X</a></td>
-				<td><a href="<?="http://".$_SERVER['HTTP_HOST'].'/'.$key?>"><?=$key?></a></td>
-				<td><?=$value?></td>
-			</tr>
-			<?php
+			foreach ($intervals as $interval_key => $interval_value) {
+				$started = false;
+				foreach ($ans as $key => $value) {
+						if(intval($value) > $interval_value) {
+							if(!$started) { $started = true;
+								?>
+								<tr>
+									<td colspan="3" style="text-align:center;"><?=$interval_key?></td>
+								</tr>
+							<?php } ?>	
+						<tr>
+							<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>">X</a></td>
+							<td><a href="<?="http://".$_SERVER['HTTP_HOST'].'/'.$key?>"><?=$key?></a></td>
+							<td><?=$value?></td>
+						</tr>
+					<?php
+					unset($ans[$key]);
+					}
+				}
 			}
 			?>
 		</table>
