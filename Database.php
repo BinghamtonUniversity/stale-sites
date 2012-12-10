@@ -199,11 +199,26 @@ class Database
 	}
 
 	public function delExcludePathDir($dir) {
+
+		include_once('SiteScanner.class.php');
+		include_once('config.php');
+		
+		$tmp = getcwd();
+		
 		$this->connect();
 		$this->cleanTable(EXCLUDE_PATH_TB, array(EXCLUDE_PATH_TB_PATH),array(trim($dir)));
 		$this->close();
-		if(file_exists(CACHE_FILE_PATH))
-			unlink(CACHE_FILE_PATH);
+		if(file_exists(CACHE_FILE_PATH)) {
+			$ss = new SiteScanner($this->getBaseDir(), $this->getExcludeDir(), array ('logo.html','hnav.html','nav.html'));
+			$ans = $ss->scanSites($dir);
+			//$ss->displayReport($basePath); //Bug https://github.com/BinghamtonUniversity/stale-sites/issues/10
+			
+			//change directory back to normal!
+			chdir($tmp);
+			//var_dump($ans);
+			//echo $dir.'|'.$ans[$dir]; 
+			file_put_contents(CACHE_FILE_PATH, ($dir.'|'.$ans[$dir]."\n"),FILE_APPEND);
+		}
 	}
 }
 ?>

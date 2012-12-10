@@ -7,7 +7,7 @@ if($basePath !== null) {
 		$ss = new SiteScanner($basePath, $ignoredSites, $ignoredFileNames);
 		$ss->scanSites();
 		//$ss->displayReport($basePath); //Bug https://github.com/BinghamtonUniversity/stale-sites/issues/10
-		$ans = $ss->getReport("http://".$_SERVER['HTTP_HOST']);
+		$ans = $ss->getReport();
 
 		?>
 		<table class="table table-striped table-hover table-bordered" width="50%">
@@ -21,7 +21,7 @@ if($basePath !== null) {
 			?>
 			<tr>
 				<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>">X</a></td>
-				<td><?=$key?></td>
+				<td><a href="<?="http://".$_SERVER['HTTP_HOST'].'/'.$key?>"><?=$key?></a></td>
 				<td><?=$value?></td>
 			</tr>
 			<?php
