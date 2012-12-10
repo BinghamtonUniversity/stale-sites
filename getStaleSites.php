@@ -36,7 +36,7 @@ if($basePath !== null) {
 								</tr>
 							<?php } ?>	
 						<tr>
-							<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>">X</a></td>
+							<td><a class="icon-remove" href="addExcludeUrls.php?url=<?=urlencode($key)?>"></a></td>
 							<td><a href="<?="http://".$_SERVER['HTTP_HOST'].'/'.$key?>"><?=$key?></a></td>
 							<td><?=$value?></td>
 						</tr>
