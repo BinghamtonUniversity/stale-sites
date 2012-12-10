@@ -173,16 +173,52 @@ class Database
 		}
 
 		$this->close();
-		if(file_exists(CACHE_FILE_PATH))
-			unlink(CACHE_FILE_PATH);
+
+		if(file_exists(CACHE_FILE_PATH)) {
+			//read the cache and delete that line!
+			$inp = array();
+			$cache = fopen(CACHE_FILE_PATH, 'r');
+            if($cache) {
+                while(!feof($cache)) {
+                	$tmp = fgets($cache);
+                    $lineSplit = explode("|", $tmp);
+                    if(strlen($lineSplit[0]) > 0 && !in_array($lineSplit[0], $dirs))
+                        $inp[] = $tmp;
+                }
+
+                fclose($cache);
+            }
+         	$cache = fopen(CACHE_FILE_PATH, 'w');
+            if($cache) {
+                foreach ($inp as $val) {
+                	fwrite($cache,$val);
+                }
+                fclose($cache);
+            }   
+		}
 	}
 
 	public function delExcludePathDir($dir) {
+
+		include_once('SiteScanner.class.php');
+		include_once('config.php');
+		
+		$tmp = getcwd();
+		
 		$this->connect();
 		$this->cleanTable(EXCLUDE_PATH_TB, array(EXCLUDE_PATH_TB_PATH),array(trim($dir)));
 		$this->close();
-		if(file_exists(CACHE_FILE_PATH))
-			unlink(CACHE_FILE_PATH);
+		if(file_exists(CACHE_FILE_PATH)) {
+			$ss = new SiteScanner($this->getBaseDir(), $this->getExcludeDir(), array ('logo.html','hnav.html','nav.html'));
+			$ans = $ss->scanSites($dir);
+			//$ss->displayReport($basePath); //Bug https://github.com/BinghamtonUniversity/stale-sites/issues/10
+			
+			//change directory back to normal!
+			chdir($tmp);
+			//var_dump($ans);
+			//echo $dir.'|'.$ans[$dir]; 
+			file_put_contents(CACHE_FILE_PATH, ($dir.'|'.$ans[$dir]."\n"),FILE_APPEND);
+		}
 	}
 }
 ?>

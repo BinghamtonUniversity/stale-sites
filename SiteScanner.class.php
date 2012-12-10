@@ -248,20 +248,25 @@ class SiteScanner
      *
      * @return null
     **/
-    public function scanSites()
+    public function scanSites($dir = false)
     {           
         if ($this->_cacheOutdated) {
-            foreach ($this->_sites as $dir) { 
-                //echo getcwd()."/".$dir." , ";
-                if(! in_array(getcwd()."/".$dir, $this->_ignoredDirectories)) {
-                    //$siteAge = $this->_lastModified($dir);
-                    $siteAge = $this->_avgModified($dir);
-                    if ($siteAge > 0) {
-                        $this->_siteAges[$dir] = $siteAge;
+                foreach ($this->_sites as $dir) { 
+                    //echo getcwd()."/".$dir." , ";
+                    if(! in_array(getcwd()."/".$dir, $this->_ignoredDirectories)) {
+                        //$siteAge = $this->_lastModified($dir);
+                        $siteAge = $this->_avgModified($dir);
+                        if ($siteAge > 0) {
+                            $this->_siteAges[$dir] = $siteAge;
+                        }
                     }
                 }
+                asort($this->_siteAges); 
+        }
+        else {
+            if($dir !== false) {
+                return array($dir => $this->_daysOld($this->_avgModified($dir)));
             }
-            asort($this->_siteAges);                
         }               
     }
             
@@ -359,7 +364,7 @@ class SiteScanner
      *
      * @return null
     **/    
-    public function getReport()
+    public function getReport($setOutput = true)
     {       
         chdir($this->_outputDir);
 
@@ -407,6 +412,7 @@ class SiteScanner
             }
         }
         else {
+            if($setOutput)
             echo "Cached output being displayed: <br/>";
 
             $cache = fopen('cache.html', 'r');
@@ -418,7 +424,6 @@ class SiteScanner
                 }
             }
         }
-
         if($cache)
             fclose($cache);
 
