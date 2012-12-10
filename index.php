@@ -21,7 +21,7 @@ include_once 'config.php';
   	<div class="container-fluid">
   		
   		<div class="row-fluid">	
-  			<h1 class="span12" style="text-align: center"> Stale sites <small>v1.6</small> </h1>
+  			<h1 class="span12" style="text-align: center">Stale Sites</h1>
 		</div>
 		<div class="row-fluid" style="text-align:center">
   			<img src="img/bulogo.png" width="168px" height="55px" class="img-polaroid">
@@ -29,7 +29,7 @@ include_once 'config.php';
 
 		<div class="row-fluid"><div class="span12"></div></div>	<!-- Extra space -->
 	  <div class="row-fluid">
-	    <div class="span2">
+	    <div class="span3 offset3">
 	     
 			
 				<lable> <strong>Base Path</strong>:<br>
@@ -57,7 +57,7 @@ include_once 'config.php';
 
 			
 	    </div>
-	    <div class="span10">
+	    <div class="span3">
 	    	<div id="status-indicator">
 
 			<?php 
