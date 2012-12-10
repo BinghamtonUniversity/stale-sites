@@ -18,7 +18,7 @@ if($basePath !== null) {
             "3+ Months Old" => 90
             );
 		?>
-		<table class="table table-striped table-hover table-bordered" width="50%">
+		<table class="table table-striped table-hover table-bordered">
 			<tr>
 				<td width="10%"><strong>Exclude</strong></td>
 				<td width="80%"><strong>Name</strong></td>
